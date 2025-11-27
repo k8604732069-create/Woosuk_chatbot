@@ -11,10 +11,17 @@ app = Flask(__name__)
 # 학사 정보 청크 데이터를 여기에 삽입
 DOCUMENT_CHUNKS = [
     "우석대학교의 2025학년도 1학기 등록금 납부 기간은 2월 20일부터 2월 24일까지입니다.",
-    "등록금을 미납할 경우 학점 취소 및 제적 처리될 수 있습니다.",
-    "2024년 11월에는 수강신청 안내 및 졸업 사정회가 예정되어 있습니다.",
+    "등록금을 미납할 경우 학점 취소 및 제적 처리될 수 있습니다. 반드시 기한 내 납부해야 합니다.",
+    
+    # 💡 [학식 메뉴 정보 추가]
+    "학식 메뉴는 교내 식당에서 제공되며, 이용 시간은 **점심은 11시 30분부터 13시 30분까지**, **저녁은 17시부터 18시 30분까지**입니다. 식당별 운영 시간은 다를 수 있습니다.",
+    
+    # 💡 [수강신청/졸업사정회 정보 구체화]
+    "2024학년도 1학기 수강신청 안내 및 졸업 사정회는 **2024년 11월 10일**에 개최될 예정이며, 수강신청은 11월 15일부터 17일까지 진행됩니다.",
+    
     "셔틀버스는 삼례캠퍼스와 전주역, 익산역을 운행하며 자세한 시간표는 학교 포털 공지사항을 확인하세요."
 ]
+
 MODEL = None       # Sentence Transformer (검색용)
 FAISS_INDEX = None # Faiss 인덱스
 GENERATOR = None   # LLM 생성 파이프라인 (생성용)
@@ -70,7 +77,7 @@ def get_chatbot_response():
         
     try:
         # 1. (검색): Faiss를 이용해 관련 문맥(context) 검색
-        retrieved_chunks = retrieve_relevant_context(query, FAISS_INDEX, MODEL, DOCUMENT_CHUNKS, k=3)
+        retrieved_chunks = retrieve_relevant_context(query, FAISS_INDEX, MODEL, DOCUMENT_CHUNKS, k=4)
         context = "\n".join(retrieved_chunks)
 
         # 2. (프롬프트 구성)
