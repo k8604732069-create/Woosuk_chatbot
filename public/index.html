@@ -3,31 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>우석 챗봇</title>
-
+    <title>우석 챗봇 </title>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main id="chat-container">
  
         <header id="chat-header">
-          <span>우석 챗봇</span>
+          <img src="https://www.woosuk.ac.kr/main/img/logo.png" alt="우석대 로고" class="header-logo">
+          
         </header>
-       
         <section id="chat-box">
           <div class="message bot-message">
-            안녕하세요! 저는 우석대 인공지능 도우미 "🤖우디봇" 입니다. 무엇을 도와드릴까요?
+            안녕하세요! 저는 우석대학교의 친절한 챗봇 "🤖우디봇" 입니다.
+            <br><br>학교 생활이나 대학에 관해서 궁금한 점이 있다면 입력하시거나 아래 버튼을 선택해 주세요!
+            <br>더욱 좋은 서비스를 위해 챗봇에 관한 의견들을 제공해주시면 감사하겠습니다!😊
             <div class="message-buttons">
-              <button class="message-button">학사일정</button>
-              <button class="message-button">학식메뉴</button>
-              <button class="message-button">포털접속</button>
-              <button class="message-button">셔틀버스</button>
-              <button class="message-button">졸업</button>
-              <button class="message-button">등록금</button>
+              <button class="message-button">📖학사일정</button>
+              <button class="message-button">🍱학식메뉴</button>
+              <button class="message-button">🅿️포털접속</button>
+              <button class="message-button">🚌셔틀버스</button>
+              <button class="message-button">🎓졸업</button>
+              <button class="message-button">🪙등록금</button>
             </div>
+         
           </div>
+          <div id="current-time"></div>
         </section>
-       
+
         <div id="loading">...응답 대기 중...</div>
        
         <section id="input-area">
