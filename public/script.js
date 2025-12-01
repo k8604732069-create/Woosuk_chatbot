@@ -91,19 +91,17 @@ userInput.focus();
 
 
 // 현재 접속 시간을 표시하는 기능
-
 function displayCurrentTime() {
     const timeElement = document.getElementById('current-time');
-    const now = new Date();
-    
-    // 한국 시간 형식으로 변환 (예: 오후 02:30)
+    const now = new Date(); 
     const timeString = now.toLocaleTimeString('ko-KR', { 
         hour: '2-digit', 
         minute: '2-digit',
         hour12: true 
-    });
-
-    timeElement.textContent = timeString;
+    }); 
+    if (timeElement) {
+        timeElement.textContent = timeString;
+    }
 }
 
 // 페이지가 로드되면 바로 시간 표시 함수 실행
