@@ -26,6 +26,19 @@ function displayMessage(content, sender) {
     //스크롤을 항상 맨 아래로 이동
     chatBox.scrollTop = chatBox.scrollHeight;
 }
+//버튼 id 전송하는 함수 
+document.querySelectorAll(".message-button").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const buttonId = btn.id;
+
+        fetch("/api/chat",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({id:buttonId})
+        })
+        .then(res => res.json())
+    })
+})
 
 //메시지를 전송하는 비동기 함수 (버튼/입력 모두 처리)
 async function sendMessage(buttonMessage=null) {
