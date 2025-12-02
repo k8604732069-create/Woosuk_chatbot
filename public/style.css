@@ -63,11 +63,9 @@ body {
 }
 
 /* 스크롤바 디자인 */
-#chat-box::scroll { overflow-y:scroll; }
 #chat-box::-webkit-scrollbar { width: 8px; }
 #chat-box::-webkit-scrollbar-track { background: transparent; }
-#chat-box::-webkit-scrollbar-thumb { background: rgba(54, 22, 217), 228, 237; border-radius: 10px; }
-#chat-box::-webkit-scrollbar-track{ background: rgba(173, 251, 255);}
+#chat-box::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
 
 /* 애니메이션 정의 (아래에서 위로 투명도 조절하며 올라옴) */
 @keyframes slideUpFade {
