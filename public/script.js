@@ -36,15 +36,15 @@ async function sendMessage(buttonMessage=null) {
     displayMessage(message, 'user');
 
     const historyToSend = [...conversationHistory]; //사용 X
-    
+
     conversationHistory.push({ role: "user", parts: [{ text: message }] });//사용 X
 
     userInput.value = '';
 
     //로딩 표시기 활성화
-    loadingIndicator.style.display = 'block';
-    sendButton.disabled = true;
-    userInput.disabled = true; 
+    loadingIndicator.style.display = 'block'; //사용 x
+    sendButton.disabled = true; //사용 x
+    userInput.disabled = true; //사용 x
 
     try {
         //Node.js 백엔드 API로 메시지 전송
@@ -93,7 +93,7 @@ userInput.addEventListener('keypress', (event) => {
 
 
 
-//메시지 버블 내 버튼 클릭 이벤트 리스너
+//메시지 버튼 내 버튼 클릭 이벤트 리스너
 messageButtons.forEach(button => {
     button.addEventListener('click', () => {
         // 버튼의 텍스트를 인자로 넘겨 sendMessage 호출

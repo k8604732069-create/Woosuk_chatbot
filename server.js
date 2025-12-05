@@ -1,6 +1,8 @@
+require('dotenv').config(); // .env 파일 추가
 const express = require('express');
 const path = require('path');
-const { getBotResponse } = require('./utils/responseGenerator');
+// const { getBotResponse } = require('./utils/responseGenerator');
+const { getBotResponse } = require('./utils/supabaseGenerator'); 
 
 // 서버 및 포트
 const app = express();
@@ -11,7 +13,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.post('/api/chat', (req, res) => {
+app.post('/api/chat', async (req, res) => {
     // 프런트엔드에서 보낸 메시지를 추출
     const { message } = req.body;
 
@@ -21,7 +23,7 @@ app.post('/api/chat', (req, res) => {
 
     try {
         // 규칙 기반 함수를 호출하여 응답 생성
-        const botResponse = getBotResponse(message);
+        const botResponse = await getBotResponse(message);
         
         // 응답 전송
         res.json({ response: botResponse });
@@ -31,7 +33,6 @@ app.post('/api/chat', (req, res) => {
         res.status(500).json({ error: '서버 내부에서 오류가 발생했습니다.' });
     }
 });
-
 
 // 서버 시작
 app.listen(PORT, () => {

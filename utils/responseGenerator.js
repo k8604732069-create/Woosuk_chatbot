@@ -1,43 +1,60 @@
-const fs = require('fs');
-const path = require('path');
+// utils/supabaseGenerator.js
 
-const dataPath = path.join(__dirname, '..', 'data', 'academics.json');
-let chatbotData = { keywords: [], default_response: "데이터 로드 실패." };
+const { createClient } = require('@supabase/supabase-js');
 
-try {
-    // JSON 파일을 동기적으로 읽고, JSON.parse를 사용하여 JavaScript 객체로 변환
-    const rawData = fs.readFileSync(dataPath, 'utf8');
-    chatbotData = JSON.parse(rawData);
-    console.log("✅ 챗봇 응답 데이터 로드 성공.");
-} catch (err) {
-    console.error(`챗봇 데이터 파일을 읽는 중 오류 발생: ${err.message}`);
+// Supabase 불러오기
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    console.error("FATAL: Supabase 환경 변수가 설정되지 않았습니다.");
 }
 
-function getBotResponse(message) {
+//  클라이언트 생성
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const TABLE_NAME = 'chatbot_responses'; // 사용할 테이블 이름
+
+// 챗봇 응답 생성 함수
+async function getBotResponse(message) {
     const msg = message.toLowerCase().trim();
 
-    // JSON 데이터 순회 및 키워드 찾기
-    for (const item of chatbotData.keywords) {
-        const keyword = item.keyword ? String(item.keyword).toLowerCase() : '';
-        const aliases = Array.isArray(item.aliases) ? item.aliases : [];
+    try {
+        // 데이터베이스에서 응답 규칙 불러오기
+        let { data: rules, error } = await supabase
+            .from(TABLE_NAME)
+            .select('keyword, aliases, response');
 
-        const foundInKeyword = keyword !== '' && msg.includes(keyword);
-        const foundInAliases = aliases.some(alias => {
-            return typeof alias === 'string' && alias !== '' && msg.includes(alias.toLowerCase());
-        });
-
-        if (foundInKeyword || foundInAliases) {
-            return item.response; // 일치하는 응답 반환
+        if (error) throw error;
+        if (!rules || rules.length === 0) {
+            return "현재 챗봇 응답 데이터베이스에 규칙이 없습니다.";
         }
-    }
 
-    // 기본 인사 응답 처리
-    if (msg.includes("안녕") || msg.includes("안녕하세요")) {
-        return "안녕하세요! 저는 우석대 도우미 우디봇입니다. 무엇을 도와드릴까요?";
-    }
+        // 키워드 매칭 로직 (클라이언트 측에서 수행)
+        for (const item of rules) {
+            const keyword = item.keyword ? item.keyword.toLowerCase() : '';
+            const aliases = item.aliases || []; 
 
-    // 기본 응답 처리
-    return chatbotData.default_response.replace('{message}', message);
+            // 키워드 또는 별칭 중 하나라도 메시지에 포함되어 있는지 확인
+            const matchFound = 
+                msg.includes(keyword) || 
+                aliases.some(alias => msg.includes(alias.toLowerCase()));
+
+            if (matchFound) {
+                return item.response; // 일치하는 응답 반환
+            }
+        }
+        
+        // 기본 응답
+        if (msg.includes("안녕") || msg.includes("안녕하세요")) {
+            return "안녕하세요! 우석대 도우미 우디봇입니다. 무엇을 도와드릴까요?";
+        }
+
+        return `죄송합니다. 요청하신 "${message}"에 대한 정보를 찾을 수 없습니다. (데이터베이스 기반)`;
+
+    } catch (error) {
+        console.error('Supabase 데이터 조회 중 오류 발생:', error.message);
+        return "죄송합니다. 서버가 데이터베이스와 통신하는 데 실패했습니다.";
+    }
 }
 
 module.exports = {
