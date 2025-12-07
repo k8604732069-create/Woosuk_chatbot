@@ -24,8 +24,17 @@ async function getBotResponse(message) {
             .from(TABLE_NAME)
             .select('keyword, aliases, response');
 
-        if (error) throw error;
-        // `rules`가 아예 없을 때와, 비어 있는 배열일 때를 구분
+        if (error) {
+            console.error("Supabase 쿼리 오류 상세:", error);
+            throw error; // 오류가 있다면 여기서 서버에 명확히 전달
+        }
+        
+        console.log(`✅ Supabase 조회 성공: 총 ${rules ? rules.length : 0}개 레코드 발견.`);
+        // rules 배열 내용의 처음 1~2개 항목을 출력하여 데이터 타입 확인
+        if (rules && rules.length > 0) {
+            console.log("첫 번째 레코드 내용:", rules[0]);
+        }
+
         if (!rules) {
             return "데이터베이스에서 규칙을 가져오지 못했습니다.";
         }
