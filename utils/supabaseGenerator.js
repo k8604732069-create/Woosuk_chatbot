@@ -1,6 +1,4 @@
-// utils/supabaseGenerator.js
-
-const { createClient } = require('@supabase/supabase-js');
+// const { createClient } = require('@supabase/supabase-js');
 
 // Supabase 불러오기
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -58,24 +56,25 @@ async function getBotResponse(message) {
             } else if (Array.isArray(item.aliases)) {
                 aliases = item.aliases;
             }
-        }
-        // 키워드 또는 별칭 중 하나라도 메시지에 포함되어 있는지 확인
-        const matchFound = 
+            // 키워드 또는 별칭 중 하나라도 메시지에 포함되어 있는지 확인
+            const matchFound = 
             msg.includes(keyword) || 
-                (Array.isArray(aliases) && aliases.some(alias => 
-                    typeof alias === 'string' && msg.includes(alias.toLowerCase())
-                ));
+            (Array.isArray(aliases) && aliases.some(alias => 
+                typeof alias === 'string' && msg.includes(alias.toLowerCase())
+            ));
 
-        if (matchFound) {
-            return item.response; // 일치하는 응답 반환
+            if (matchFound) {
+                return item.response; // 일치하는 응답 반환
+            }
         }
+        
         
         // 기본 응답
         if (msg.includes("안녕") || msg.includes("안녕하세요")) {
             return "안녕하세요! 우석대 도우미 우디봇입니다. 무엇을 도와드릴까요?";
         }
 
-        return `죄송합니다. 요청하신 "${message}"에 대한 정보를 찾을 수 없습니다. (데이터베이스 기반)`;
+        return `죄송합니다. 요청하신 "${message}"에 대한 정보를 찾을 수 없습니다. 도움이 필요하시면 다른 질문을 해주세요.`;
 
     } catch (error) {
         console.error('Supabase 데이터 조회 중 오류 발생:', error.message);
